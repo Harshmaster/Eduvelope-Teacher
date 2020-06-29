@@ -29,13 +29,14 @@ class _UpcomingClassesState extends State<UpcomingClasses> {
               print(sdata.data.documents);
               return ListView.builder(
                 itemBuilder: (ctx, index) {
-                  if (sdata.data.documents[index]['start'] >
-                      int.parse(DateFormat.H().format(DateTime.now()))) {
+                  if (sdata.data.documents[index]['startTiming'] >
+                      int.parse(DateFormat.H().format(DateTime.now()))*100) {
                     return ClassTile(
                       isLive: false,
                       name: sdata.data.documents[index]['className'],
                       standard: sdata.data.documents[index]['standard'],
-                      timing: sdata.data.documents[index]['timing'],
+                      startTiming: sdata.data.documents[index]['startTiming'].toString(),
+                      endTiming: sdata.data.documents[index]['endTiming'].toString(),
                     );
                   }
                   return SizedBox(

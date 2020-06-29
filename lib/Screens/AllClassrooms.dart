@@ -48,8 +48,10 @@ class _AllClassroomsState extends State<AllClassrooms> {
                                 .data.documents[index].data["className"],
                             standard:
                                 snapshot.data.documents[index].data["standard"],
-                            timing:
-                                snapshot.data.documents[index].data["timing"],
+                            startTiming: snapshot
+                                .data.documents[index].data["startTiming"],
+                            endTiming: snapshot
+                                .data.documents[index].data["endTiming"],
                           );
                         }),
                       ),

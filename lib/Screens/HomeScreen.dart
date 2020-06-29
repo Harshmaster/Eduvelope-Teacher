@@ -1,7 +1,8 @@
-
 import 'package:eduvelopeV2/Screens/ClassroomTabBar.dart';
 import 'package:eduvelopeV2/Screens/LiveClassroomTabBar.dart';
+import 'package:eduvelopeV2/Screens/Login.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,12 +21,41 @@ class _HomeScreenState extends State<HomeScreen> {
         length: 2,
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(100), 
+            preferredSize: Size.fromHeight(100),
             child: AppBar(
+              automaticallyImplyLeading: false,
               actions: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(right:10),
-                  child: Icon(Icons.power_settings_new), 
+                InkWell(
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10),
+                    child: Icon(Icons.power_settings_new),
+                  ),
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('Alert'),
+                            content: Text('Do you want To Logout ?'),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () async {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.setString("email", null);
+                                  Navigator.of(context).pop();
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              Login()));
+                                },
+                                child: Text('OK'),
+                              )
+                            ],
+                          );
+                        });
+                  },
                 ),
               ],
               title: Text('Eduvelope'),
@@ -36,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   unselectedLabelColor: Colors.white,
                   indicatorSize: TabBarIndicatorSize.label,
                   indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10),
                       // borderRadius: BorderRadius.only(
                       //     topLeft: Radius.circular(10),
                       //     topRight: Radius.circular(10)),
@@ -59,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           body: TabBarView(children: [
             ClassroomTabBar(),
-            LiveClassroomTabBar(), 
+            LiveClassroomTabBar(),
           ]),
         ));
   }

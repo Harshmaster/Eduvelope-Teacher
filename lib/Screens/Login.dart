@@ -21,12 +21,13 @@ class _LoginState extends State<Login> {
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height,
-          child: Column(
+          child: Column(  
             children: <Widget>[
               Container(
-                  width: MediaQuery.of(context).size.width - 40,
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  child: Image.asset('assets/transparent-logo.png')),
+                width: MediaQuery.of(context).size.width - 40,
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Image.asset('assets/logo.png'),
+              ), 
               Container(
                 margin: EdgeInsets.only(
                   left: 20,
@@ -200,7 +201,7 @@ class _LoginState extends State<Login> {
                       if (docs.documents.length == 0) {
                         print("LENGTH IS ZERO");
                       } else {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>

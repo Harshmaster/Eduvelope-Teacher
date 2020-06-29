@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduvelopeV2/Screens/Login.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -22,7 +23,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView( 
+      body: SingleChildScrollView(
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -33,7 +34,7 @@ class _SignupPageState extends State<SignupPage> {
                     margin: EdgeInsets.only(left: 20, right: 20),
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.3,
-                    child: Image.asset('assets/transparent-logo.png')),
+                    child: Image.asset('assets/logo.png')),
               ),
               Row(
                 children: <Widget>[
@@ -439,11 +440,11 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               Container(
-                height: 45, 
+                height: 45,
                 margin: EdgeInsets.only(
-                  top: 25,  
+                  top: 25,
                   left: 20,
-                  right: 20, 
+                  right: 20,
                   bottom: 10,
                 ),
                 width: double.infinity,
@@ -466,10 +467,27 @@ class _SignupPageState extends State<SignupPage> {
                       "email": emailController.text,
                       "teacherId": teacherId,
                     }).then((value) {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (BuildContext context) => HomeScreen()));
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('SUCCESS'),
+                              content: Text('CLASSROOM ADDED SUCCESSFULLY'),
+                              actions: <Widget>[
+                                FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Login()));
+                                  },
+                                  child: Text('OK'),
+                                )
+                              ],
+                            );
+                          });
                     });
                   },
                   child: Text(

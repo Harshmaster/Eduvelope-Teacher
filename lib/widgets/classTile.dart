@@ -9,15 +9,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ClassTile extends StatefulWidget {
   final String name;
   final int standard;
-  final String timing;
+  final String startTiming;
+  final String endTiming;
   final bool isLive;
 
-  ClassTile({
-    this.name,
-    this.standard,
-    this.timing,
-    this.isLive,
-  });
+  ClassTile(
+      {this.name,
+      this.standard,
+      this.isLive,
+      this.endTiming,
+      this.startTiming});
 
   @override
   _ClassTileState createState() => _ClassTileState();
@@ -85,7 +86,10 @@ class _ClassTileState extends State<ClassTile> {
                               children: <Widget>[
                                 _validateError
                                     ? Text('Class should have a name')
-                                    : SizedBox(width: 0, height: 0,),
+                                    : SizedBox(
+                                        width: 0,
+                                        height: 0,
+                                      ),
                                 Text(
                                   widget.name,
                                   style: TextStyle(
@@ -117,7 +121,7 @@ class _ClassTileState extends State<ClassTile> {
                                   height: 4,
                                 ),
                                 Text(
-                                  '${widget.timing}',
+                                  '${widget.startTiming} - ${widget.endTiming}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),

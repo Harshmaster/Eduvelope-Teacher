@@ -13,7 +13,8 @@ class _CreateClassroomState extends State<CreateClassroom> {
   final TextEditingController classNameController = TextEditingController();
   final TextEditingController subjectController = TextEditingController();
   final TextEditingController standardController = TextEditingController();
-  final TextEditingController timingController = TextEditingController();
+  final TextEditingController startTimingController = TextEditingController();
+  final TextEditingController endTimingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +204,7 @@ class _CreateClassroomState extends State<CreateClassroom> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10),
                       child: Text(
-                        "Timing",
+                        "Start Timing",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -218,7 +219,7 @@ class _CreateClassroomState extends State<CreateClassroom> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: TextField(
-                          controller: timingController,
+                          controller: startTimingController,
                           enabled: true,
                           maxLengthEnforced: true,
                           minLines: 1,
@@ -239,8 +240,66 @@ class _CreateClassroomState extends State<CreateClassroom> {
                               color: Colors.grey,
                               fontSize: 17,
                             ),
-                            hintText: "eg.10AM-12PM",
+                            hintText: "eg.1630",
                           ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                  left: 20,
+                  right: 29,
+                  top: 20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        "End Timing",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: TextField(
+                          controller: endTimingController,
+                          enabled: true,
+                          maxLengthEnforced: true,
+                          minLines: 1,
+                          cursorColor: Colors.black,
+                          cursorWidth: 1,
+                          dragStartBehavior: DragStartBehavior.start,
+                          decoration: InputDecoration(
+                            fillColor: Colors.grey[200],
+                            filled: true,
+                            labelStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                            ),
+                            hintText: "eg.1830",
+                          ),
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                     ),
@@ -270,10 +329,12 @@ class _CreateClassroomState extends State<CreateClassroom> {
                         .collection('Classrooms')
                         .document(classNameController.text)
                         .setData({
+                      "active": false, 
                       "className": classNameController.text,
                       "subject": subjectController.text,
                       "standard": int.parse(standardController.text),
-                      "timing": timingController.text,
+                      "startTiming": int.parse(startTimingController.text),
+                      "endTiming": int.parse(endTimingController.text),
                     }).then((value) {
                       showDialog(
                           context: context,
@@ -294,7 +355,8 @@ class _CreateClassroomState extends State<CreateClassroom> {
                       classNameController.clear();
                       subjectController.clear();
                       standardController.clear();
-                      timingController.clear();
+                      startTimingController.clear();
+                      endTimingController.clear();
                     });
                   },
                   child: Text(

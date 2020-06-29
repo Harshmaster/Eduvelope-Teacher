@@ -29,15 +29,18 @@ class _LiveClassesState extends State<LiveClasses> {
               print(sdata.data.documents);
               return ListView.builder(
                 itemBuilder: (ctx, index) {
-                  if (sdata.data.documents[index]['start'] <=
-                          int.parse(DateFormat.H().format(DateTime.now())) &&
-                      sdata.data.documents[index]['end'] >=
-                          int.parse(DateFormat.H().format(DateTime.now()))) {
+                  if (sdata.data.documents[index]['startTiming'] <=
+                          int.parse(DateFormat.H().format(DateTime.now()))*100 &&
+                      sdata.data.documents[index]['endTiming'] >
+                          int.parse(DateFormat.H().format(DateTime.now()))*100) {
                     return ClassTile(
                       isLive: true,
                       name: sdata.data.documents[index]['className'],
                       standard: sdata.data.documents[index]['standard'],
-                      timing: sdata.data.documents[index]['timing'],
+                      startTiming:
+                          sdata.data.documents[index]['startTiming'].toString(),
+                      endTiming:
+                          sdata.data.documents[index]['endTiming'].toString(),
                     );
                   }
                   return SizedBox(

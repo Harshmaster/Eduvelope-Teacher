@@ -18,9 +18,9 @@ class _LiveClassroomTabBarState extends State<LiveClassroomTabBar> {
     return DefaultTabController(
       initialIndex: 0,
       length: 2,
-      child: Scaffold(
+      child: Scaffold( 
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50),
+          preferredSize: Size.fromHeight(35),
           child: AppBar(
             backgroundColor: Colors.blue[900],
             elevation: 0,

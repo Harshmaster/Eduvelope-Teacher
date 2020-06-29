@@ -6,12 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ClassroomListWidget extends StatefulWidget {
   final String name;
   final int standard;
-  final String timing;
+  final int endTiming;
+  final int startTiming;
 
   ClassroomListWidget({
     this.name,
     this.standard,
-    this.timing,
+    this.endTiming,
+    this.startTiming,
   });
 
   @override
@@ -19,13 +21,52 @@ class ClassroomListWidget extends StatefulWidget {
 }
 
 class _ClassroomListWidgetState extends State<ClassroomListWidget> {
+  int startTime;
+  int endTime;
+  String totalStartTime;
+  String totalEndTime;
+
+  formatTime() {
+    startTime = widget.startTiming;
+    endTime = widget.endTiming;
+
+    if ((startTime / 100) > 12) {
+      int startTimeHours = (startTime / 100).round() - 12;
+      int startTimeMinutes = startTime % 100;
+      totalStartTime = "$startTimeHours:$startTimeMinutes";
+      print(totalStartTime);
+    } else {
+      int startTimeHour = (startTime / 100).round();
+      int startTimeMinutes = startTime % 100;
+      // if (startTimeMinutes == 0) {
+      //   startTimeMinutes = 00;
+      // }
+      totalStartTime = "$startTimeHour: ${startTimeMinutes}";
+      print(totalStartTime);
+    }
+
+
+
+
+        if ((endTime / 100) > 12) {
+      int endTimeHours = (endTime / 100).round() - 12;
+      int endTimeMinutes = endTime % 100;
+      totalEndTime = "$endTimeHours:$endTimeMinutes";
+      print(totalEndTime);
+    } else {
+      int endTimeHour = (endTime / 100).round();
+      int endTimeMinutes = endTime % 100;
+      totalEndTime = "$endTimeHour: ${endTimeMinutes}";
+      print(totalEndTime);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
   }
 
-
-    SharedPreferences prefs;
+  SharedPreferences prefs;
   getTeacherId() async {
     prefs = await SharedPreferences.getInstance();
     return prefs.getString("teacherId");
@@ -33,6 +74,7 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    formatTime();
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -45,9 +87,9 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
       },
       child: FutureBuilder(
           future: getTeacherId(),
-          builder: (context,myFuture) {
+          builder: (context, myFuture) {
             return StreamBuilder(
-                stream: Firestore.instance  
+                stream: Firestore.instance
                     .collection("Teachers")
                     .document(myFuture.data)
                     .collection("Classrooms")
@@ -115,7 +157,7 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
                                 height: 4,
                               ),
                               Text(
-                                '${widget.timing}',
+                                "${totalStartTime} - $totalEndTime ",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
