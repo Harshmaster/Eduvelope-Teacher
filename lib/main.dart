@@ -1,5 +1,3 @@
-import 'package:eduvelopeV2/Screens/HomeScreen.dart';
-import 'package:eduvelopeV2/Screens/Login.dart';
 import 'package:eduvelopeV2/Screens/SplashScreen.dart';
 import 'package:flutter/material.dart';
 

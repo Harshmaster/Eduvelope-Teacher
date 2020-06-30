@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class AddStudents extends StatefulWidget {
   final String className;
@@ -459,6 +460,17 @@ class _AddStudentsState extends State<AddStudents> {
                 onPressed: () async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
+
+                  await Firestore.instance.collection("Students").add({
+                    "studentName": nameController.text,
+                    "email": emailController.text,
+                    "mobile": int.parse(mobileController.text),
+                    "studentId": studentIDController.text,
+                    "studentLiveClassID": studentLiveClassIDController.text,
+                    "studentFees": feesController.text,
+                    "feesDate": feesDateController.text,
+                  });
+
                   await Firestore.instance
                       .collection('Teachers')
                       .document(prefs.getString("teacherId"))
@@ -474,7 +486,7 @@ class _AddStudentsState extends State<AddStudents> {
                     "studentLiveClassID": studentLiveClassIDController.text,
                     "studentFees": feesController.text,
                     "feesDate": feesDateController.text,
-                  }).then((value) {
+                  }).then((value) async {
                     print('DONE');
                     showDialog(
                         context: context,
@@ -499,8 +511,6 @@ class _AddStudentsState extends State<AddStudents> {
                     studentLiveClassIDController.clear();
                     feesController.clear();
                     feesDateController.clear();
-                  }).catchError((err) {
-                    print('error aagaya bro');
                   });
                 },
                 child: Text(

@@ -470,9 +470,9 @@ class _SignupPageState extends State<SignupPage> {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
+                            return AlertDialog( 
                               title: Text('SUCCESS'),
-                              content: Text('CLASSROOM ADDED SUCCESSFULLY'),
+                              content: Text('Account Created Successfully'),
                               actions: <Widget>[
                                 FlatButton(
                                   onPressed: () {
