@@ -20,7 +20,7 @@ class _ClassroomTabBarState extends State<ClassroomTabBar> {
         length: 2,
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(39), 
+            preferredSize: Size.fromHeight(48), 
             child: AppBar(
               backgroundColor: Colors.blue[900],
               elevation: 0,

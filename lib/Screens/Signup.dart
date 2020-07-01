@@ -454,6 +454,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   color: Colors.blue[900],
                   onPressed: () async {
+                    print('working');
                     String teacherId = uuid.v4();
                     await Firestore.instance
                         .collection("Teachers")
@@ -466,6 +467,7 @@ class _SignupPageState extends State<SignupPage> {
                       "mobile": mobileController.text,
                       "email": emailController.text,
                       "teacherId": teacherId,
+                      "classrooms" : [],
                     }).then((value) {
                       showDialog(
                           context: context,

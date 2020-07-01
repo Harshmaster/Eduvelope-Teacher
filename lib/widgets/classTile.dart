@@ -12,13 +12,14 @@ class ClassTile extends StatefulWidget {
   final String startTiming;
   final String endTiming;
   final bool isLive;
+  final int numOfStudents;
 
   ClassTile(
       {this.name,
       this.standard,
       this.isLive,
       this.endTiming,
-      this.startTiming});
+      this.startTiming,this.numOfStudents});
 
   @override
   _ClassTileState createState() => _ClassTileState();
@@ -39,120 +40,101 @@ class _ClassTileState extends State<ClassTile> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getTeacherId(),
-        builder: (context, myFuture) {
-          return StreamBuilder(
-              stream: Firestore.instance
-                  .collection("Teachers")
-                  .document(myFuture.data)
-                  .collection("Classrooms")
-                  .document(widget.name)
-                  .collection("Students")
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.data != null) {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    margin: EdgeInsets.only(
-                      right: 15,
-                      top: 10,
-                      bottom: 10,
-                      left: 10,
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: EdgeInsets.only(
+        right: 15,
+        top: 10,
+        bottom: 10,
+        left: 10,
+      ),
+      elevation: 7,
+      child: Container(
+        height: 120,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          image: DecorationImage(
+            image: AssetImage('assets/classroom.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.5), BlendMode.dstATop),
+          ),
+        ),
+        width: MediaQuery.of(context).size.width,
+        child: Container(
+          margin: EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: widget.isLive
+                ? MainAxisAlignment.spaceAround
+                : MainAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _validateError
+                      ? Text('Class should have a name')
+                      : SizedBox(
+                          width: 0,
+                          height: 0,
+                        ),
+                  Text(
+                    widget.name,
+                    style: TextStyle(
+                      color: Colors.blue[900],
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    elevation: 7,
-                    child: Container(
-                      height: 120,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          image: AssetImage('assets/classroom.jpg'),
-                          fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(
-                              Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    '${widget.numOfStudents} Students',
+                    style: TextStyle(
+                      color: Colors.amber[900],
+                      fontSize: 16,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    'Class ${widget.standard}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    '${widget.startTiming} - ${widget.endTiming}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ],
+              ),
+              widget.isLive
+                  ? InkWell(
+                      child: Center(
+                        child: Icon(
+                          Icons.play_circle_filled,
+                          color: Colors.black,
+                          size: 65,
                         ),
                       ),
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                        margin: EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: widget.isLive
-                              ? MainAxisAlignment.spaceAround
-                              : MainAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                _validateError
-                                    ? Text('Class should have a name')
-                                    : SizedBox(
-                                        width: 0,
-                                        height: 0,
-                                      ),
-                                Text(
-                                  widget.name,
-                                  style: TextStyle(
-                                    color: Colors.blue[900],
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  '${snapshot.data.documents.length} Students',
-                                  style: TextStyle(
-                                    color: Colors.amber[900],
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  'Class ${widget.standard}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  '${widget.startTiming} - ${widget.endTiming}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              ],
-                            ),
-                            widget.isLive
-                                ? InkWell(
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.play_circle_filled,
-                                        color: Colors.black,
-                                        size: 65,
-                                      ),
-                                    ),
-                                    onTap: _validateError ? null : onJoin,
-                                  )
-                                : SizedBox(
-                                    width: 0,
-                                    height: 0,
-                                  ),
-                          ],
-                        ),
-                      ),
+                      onTap: _validateError ? null : onJoin,
+                    )
+                  : SizedBox(
+                      width: 0,
+                      height: 0,
                     ),
-                  );
-                } else {
-                  return Container();
-                }
-              });
-        });
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> onJoin() async {
@@ -164,8 +146,6 @@ class _ClassTileState extends State<ClassTile> {
       await _handleCameraAndMic();
       getTeacherId().then((value) {
         Firestore.instance
-            .collection('Teachers')
-            .document(value)
             .collection('Classrooms')
             .document(widget.name)
             .updateData({

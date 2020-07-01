@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduvelopeV2/Screens/Students/localData.dart';
 import 'package:flutter/material.dart';
 
 import 'package:eduvelopeV2/Screens/Students/StudentListCar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'StudentListCar.dart';
+import 'StudentListCar.dart';
 
 class AllStudents extends StatefulWidget {
   final String name;
@@ -20,43 +24,36 @@ class _AllStudentsState extends State<AllStudents> {
     return prefs.getString("teacherId");
   }
 
+
   @override
   Widget build(BuildContext context) {
     print(widget.name);
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-            future: getTeacherId(),
-            builder: (context, myFuture) {
-              return StreamBuilder(
-                stream: Firestore.instance
-                    .collection("Teachers")
-                    .document(myFuture.data)
-                    .collection("Classrooms")
-                    .document(widget.name)
-                    .collection("Students")
-                    .snapshots(),
-                builder: (context, snap) {
-                  if (snap.data != null) {
-                    return Container(
-                      child: Column(
-                          children: List.generate(snap.data.documents.length,
-                              (index) {
-                        return StudentListCard(
-                          name: snap.data.documents[index].data["studentName"],
-                          batch: widget.name,
-                          id: snap.data.documents[index].data["studentId"],
-                          standard: widget.standard,
-                        );
-                      })),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              );
-            }),
+      body: StreamBuilder(
+        builder: (ctx, stream) {
+          if (stream.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return ListView.builder(
+            itemBuilder: (ctx, index) {
+              if(currentClassStudents.contains(stream.data.documents[index]['uniqueID'])){
+                return StudentListCard(
+                  id: stream.data.documents[index]['studentId'],
+                  name: stream.data.documents[index]['studentName'],
+                  standard: stream.data.documents[index]['standard'],
+                );
+              }
+              else{
+                return SizedBox(width: 0, height: 0,);
+              }
+            },
+            itemCount: stream.data.documents.length,
+          );
+        },
+        stream: Firestore.instance.collection('Students').snapshots(),
       ),
     );
   }

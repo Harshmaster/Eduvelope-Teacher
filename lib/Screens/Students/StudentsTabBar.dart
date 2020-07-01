@@ -64,6 +64,7 @@ class _StudentsTabBarState extends State<StudentsTabBar> {
             ),
             AddStudents(
               className: widget.classroomName,
+              standard: widget.standard,
             ),
           ]),
         ));

@@ -3,6 +3,7 @@ import 'package:eduvelopeV2/Screens/LiveClassroomTabBar.dart';
 import 'package:eduvelopeV2/Screens/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../globalData.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,6 +13,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
+    getTeacherId().then((value){
+      getCurrentTeacherRooms(value);
+    });
     super.initState();
   }
 

@@ -1,3 +1,4 @@
+import 'package:eduvelopeV2/globalData.dart';
 import 'package:eduvelopeV2/widgets/classTile.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -30,9 +31,13 @@ class _LiveClassesState extends State<LiveClasses> {
               return ListView.builder(
                 itemBuilder: (ctx, index) {
                   if (sdata.data.documents[index]['startTiming'] <=
-                          int.parse(DateFormat.H().format(DateTime.now()))*100 &&
+                          int.parse(DateFormat.H().format(DateTime.now())) *
+                              100 &&
                       sdata.data.documents[index]['endTiming'] >
-                          int.parse(DateFormat.H().format(DateTime.now()))*100) {
+                          int.parse(DateFormat.H().format(DateTime.now())) *
+                              100 &&
+                      currentTeacherClassrooms
+                          .contains(sdata.data.documents[index]['className'])) {
                     return ClassTile(
                       isLive: true,
                       name: sdata.data.documents[index]['className'],
@@ -41,6 +46,7 @@ class _LiveClassesState extends State<LiveClasses> {
                           sdata.data.documents[index]['startTiming'].toString(),
                       endTiming:
                           sdata.data.documents[index]['endTiming'].toString(),
+                      numOfStudents: sdata.data.documents[index]['students'].length,    
                     );
                   }
                   return SizedBox(
@@ -51,11 +57,7 @@ class _LiveClassesState extends State<LiveClasses> {
                 itemCount: sdata.data.documents.length,
               );
             },
-            stream: Firestore.instance
-                .collection('Teachers')
-                .document(fdata.data)
-                .collection('Classrooms')
-                .snapshots(),
+            stream: Firestore.instance.collection('Classrooms').snapshots(),
           );
         },
         future: getTeacherId(),

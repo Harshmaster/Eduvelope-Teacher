@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../globalData.dart';
+
 class UpcomingClasses extends StatefulWidget {
   @override
   _UpcomingClassesState createState() => _UpcomingClassesState();
@@ -30,13 +32,16 @@ class _UpcomingClassesState extends State<UpcomingClasses> {
               return ListView.builder(
                 itemBuilder: (ctx, index) {
                   if (sdata.data.documents[index]['startTiming'] >
-                      int.parse(DateFormat.H().format(DateTime.now()))*100) {
+                      int.parse(DateFormat.H().format(DateTime.now()))*100 && 
+                      currentTeacherClassrooms
+                          .contains(sdata.data.documents[index]['className'])) {
                     return ClassTile(
                       isLive: false,
                       name: sdata.data.documents[index]['className'],
                       standard: sdata.data.documents[index]['standard'],
                       startTiming: sdata.data.documents[index]['startTiming'].toString(),
                       endTiming: sdata.data.documents[index]['endTiming'].toString(),
+                      numOfStudents: sdata.data.documents[index]['students'].length,
                     );
                   }
                   return SizedBox(
@@ -48,8 +53,6 @@ class _UpcomingClassesState extends State<UpcomingClasses> {
               );
             },
             stream: Firestore.instance
-                .collection('Teachers')
-                .document(fdata.data)
                 .collection('Classrooms')
                 .snapshots(),
           );

@@ -4,11 +4,9 @@ class StudentListCard extends StatefulWidget {
   final String name;
   final String id;
   final int standard;
-  final String batch;
 
   StudentListCard({
     this.name,
-    this.batch,
     this.id,
     this.standard,
   });

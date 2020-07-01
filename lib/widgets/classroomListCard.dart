@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eduvelopeV2/Screens/Students/StudentsTabBar.dart';
+import 'package:eduvelopeV2/Screens/Students/localData.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,12 +9,14 @@ class ClassroomListWidget extends StatefulWidget {
   final int standard;
   final int endTiming;
   final int startTiming;
+  final int numOfStudents;
 
   ClassroomListWidget({
     this.name,
     this.standard,
     this.endTiming,
     this.startTiming,
+    this.numOfStudents,
   });
 
   @override
@@ -45,10 +48,7 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
       print(totalStartTime);
     }
 
-
-
-
-        if ((endTime / 100) > 12) {
+    if ((endTime / 100) > 12) {
       int endTimeHours = (endTime / 100).round() - 12;
       int endTimeMinutes = endTime % 100;
       totalEndTime = "$endTimeHours:$endTimeMinutes";
@@ -77,6 +77,7 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
     formatTime();
     return InkWell(
       onTap: () {
+        getCurrentClassStudents(widget.name);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -85,93 +86,73 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
                       standard: widget.standard,
                     )));
       },
-      child: FutureBuilder(
-          future: getTeacherId(),
-          builder: (context, myFuture) {
-            return StreamBuilder(
-                stream: Firestore.instance
-                    .collection("Teachers")
-                    .document(myFuture.data)
-                    .collection("Classrooms")
-                    .document(widget.name)
-                    .collection("Students")
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.data != null) {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      margin: EdgeInsets.only(
-                        right: 15,
-                        top: 10,
-                        bottom: 10,
-                        left: 10,
-                      ),
-                      elevation: 7,
-                      child: Container(
-                        height: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: AssetImage('assets/classroom.jpg'),
-                            fit: BoxFit.cover,
-                            colorFilter: new ColorFilter.mode(
-                                Colors.black.withOpacity(0.5),
-                                BlendMode.dstATop),
-                          ),
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        child: Container(
-                          margin: EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                widget.name,
-                                style: TextStyle(
-                                  color: Colors.blue[900],
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                '${snapshot.data.documents.length} Students',
-                                style: TextStyle(
-                                  color: Colors.amber[900],
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                'Class ${widget.standard}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                "${totalStartTime} - $totalEndTime ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                });
-          }),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: EdgeInsets.only(
+          right: 15,
+          top: 10,
+          bottom: 10,
+          left: 10,
+        ),
+        elevation: 7,
+        child: Container(
+          height: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+              image: AssetImage('assets/classroom.jpg'),
+              fit: BoxFit.cover,
+              colorFilter: new ColorFilter.mode(
+                  Colors.black.withOpacity(0.5), BlendMode.dstATop),
+            ),
+          ),
+          width: MediaQuery.of(context).size.width,
+          child: Container(
+            margin: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  widget.name,
+                  style: TextStyle(
+                    color: Colors.blue[900],
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  '${widget.numOfStudents} Students',
+                  style: TextStyle(
+                    color: Colors.amber[900],
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  'Class ${widget.standard}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  "${totalStartTime} - $totalEndTime ",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

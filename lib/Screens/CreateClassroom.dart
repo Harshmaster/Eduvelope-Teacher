@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduvelopeV2/globalData.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,14 @@ class CreateClassroom extends StatefulWidget {
 }
 
 class _CreateClassroomState extends State<CreateClassroom> {
+  SharedPreferences prefs;
+  String teacherID;
+  getTeacherId() async {
+    prefs = await SharedPreferences.getInstance();
+    teacherID = prefs.getString("teacherId");
+    return prefs.getString("teacherId");
+  }
+
   final TextEditingController classNameController = TextEditingController();
   final TextEditingController subjectController = TextEditingController();
   final TextEditingController standardController = TextEditingController();
@@ -320,13 +329,19 @@ class _CreateClassroomState extends State<CreateClassroom> {
                   ),
                   color: Colors.blue[900],
                   onPressed: () async {
+                    print('creating');
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     print(prefs.getString("teacherId"));
+                    currentTeacherClassrooms.add(classNameController.text);
+
+                    await Firestore.instance.collection('Teachers').document(currentTeacherID).updateData({
+                      'classrooms' : currentTeacherClassrooms,
+                    });
+
+
                     await Firestore.instance
-                        .collection("Teachers")
-                        .document(prefs.getString("teacherId"))
-                        .collection('Classrooms')
+                        .collection("Classrooms")
                         .document(classNameController.text)
                         .setData({
                       "active": false, 
@@ -335,6 +350,8 @@ class _CreateClassroomState extends State<CreateClassroom> {
                       "standard": int.parse(standardController.text),
                       "startTiming": int.parse(startTimingController.text),
                       "endTiming": int.parse(endTimingController.text),
+                      "teacherID": currentTeacherID,
+                      'students' : [],
                     }).then((value) {
                       showDialog(
                           context: context,

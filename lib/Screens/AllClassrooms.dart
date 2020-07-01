@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduvelopeV2/globalData.dart';
 import 'package:eduvelopeV2/widgets/classroomListCard.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,27 +33,29 @@ class _AllClassroomsState extends State<AllClassrooms> {
             builder: (context, myFuture) {
               return StreamBuilder(
                 initialData: null,
-                stream: Firestore.instance
-                    .collection("Teachers")
-                    .document(myFuture.data)
-                    .collection("Classrooms")
-                    .snapshots(),
+                stream: Firestore.instance.collection("Classrooms").snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.data != null) {
                     return Container(
                       child: Column(
                         children: List.generate(snapshot.data.documents.length,
                             (index) {
-                          return ClassroomListWidget(
-                            name: snapshot
-                                .data.documents[index].data["className"],
-                            standard:
-                                snapshot.data.documents[index].data["standard"],
-                            startTiming: snapshot
-                                .data.documents[index].data["startTiming"],
-                            endTiming: snapshot
-                                .data.documents[index].data["endTiming"],
-                          );
+                          if (currentTeacherClassrooms.contains(snapshot
+                              .data.documents[index].data["className"])) {
+                            return ClassroomListWidget(
+                              name: snapshot
+                                  .data.documents[index].data["className"],
+                              standard: snapshot
+                                  .data.documents[index].data["standard"],
+                              startTiming: snapshot
+                                  .data.documents[index].data["startTiming"],
+                              endTiming: snapshot
+                                  .data.documents[index].data["endTiming"],
+                              numOfStudents: snapshot.data.documents[index]['students'].length,    
+                            );
+                          } else {
+                            return SizedBox(width:0, height:0);
+                          }
                         }),
                       ),
                     );

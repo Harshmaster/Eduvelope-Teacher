@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduvelopeV2/Screens/Students/localData.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,13 +7,15 @@ import 'package:uuid/uuid.dart';
 
 class AddStudents extends StatefulWidget {
   final String className;
-  AddStudents({this.className});
+  final int standard;
+  AddStudents({this.className, this.standard});
 
   @override
   _AddStudentsState createState() => _AddStudentsState();
 }
 
 class _AddStudentsState extends State<AddStudents> {
+  var uuid = Uuid();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
@@ -458,34 +461,29 @@ class _AddStudentsState extends State<AddStudents> {
                 ),
                 color: Colors.blue[900],
                 onPressed: () async {
+                  var uid = uuid.v4();
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
 
+                      currentClassStudents.add(uid);
+
                   await Firestore.instance.collection("Students").add({
+                    "uniqueID" : uid,
                     "studentName": nameController.text,
                     "email": emailController.text,
                     "mobile": int.parse(mobileController.text),
                     "studentId": studentIDController.text,
-                    "studentLiveClassID": studentLiveClassIDController.text,
                     "studentFees": feesController.text,
                     "feesDate": feesDateController.text,
+                    'standard' : widget.standard,
+                    'classname' : widget.className,
                   });
 
                   await Firestore.instance
-                      .collection('Teachers')
-                      .document(prefs.getString("teacherId"))
                       .collection("Classrooms")
                       .document(widget.className)
-                      .collection("Students")
-                      .document(studentIDController.text)
-                      .setData({
-                    "studentName": nameController.text,
-                    "email": emailController.text,
-                    "mobile": int.parse(mobileController.text),
-                    "studentId": studentIDController.text,
-                    "studentLiveClassID": studentLiveClassIDController.text,
-                    "studentFees": feesController.text,
-                    "feesDate": feesDateController.text,
+                      .updateData({
+                        'students' : currentClassStudents,
                   }).then((value) async {
                     print('DONE');
                     showDialog(

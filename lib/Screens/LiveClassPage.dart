@@ -287,7 +287,7 @@ class _LiveClassPageState extends State<LiveClassPage> {
 
   void _onCallEnd(BuildContext context) {
     getTeacherId().then((value){
-      Firestore.instance.collection('Teachers').document(value).collection('Classrooms').document(widget.channelName).updateData({
+      Firestore.instance.collection('Classrooms').document(widget.channelName).updateData({
         'active' : false, 
       });
     });
