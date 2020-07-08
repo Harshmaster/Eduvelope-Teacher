@@ -13,9 +13,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    getTeacherId().then((value){
-      getCurrentTeacherRooms(value);
-    });
     super.initState();
   }
 

@@ -17,14 +17,6 @@ class AllStudents extends StatefulWidget {
 }
 
 class _AllStudentsState extends State<AllStudents> {
-  SharedPreferences prefs;
-
-  getTeacherId() async {
-    prefs = await SharedPreferences.getInstance();
-    return prefs.getString("teacherId");
-  }
-
-
   @override
   Widget build(BuildContext context) {
     print(widget.name);
@@ -32,26 +24,50 @@ class _AllStudentsState extends State<AllStudents> {
       backgroundColor: Colors.white,
       body: StreamBuilder(
         builder: (ctx, stream) {
-          if (stream.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
+          if (stream.data != null) {
+            return Column(
+              children: List.generate(
+                stream.data.documents.length,
+                (index) {
+                  if (currentClassStudents
+                      .contains(stream.data.documents[index]['uniqueID'])) {
+                    return StudentListCard(
+                      id: stream.data.documents[index]['studentId'],
+                      name: stream.data.documents[index]['studentName'],
+                      standard: stream.data.documents[index]['standard'],
+                    );
+                  } else {
+                    return null;
+                  }
+                },
+              ).where((element) => element != null).toList(),
             );
+          } else {
+            return Container();
           }
-          return ListView.builder(
-            itemBuilder: (ctx, index) {
-              if(currentClassStudents.contains(stream.data.documents[index]['uniqueID'])){
-                return StudentListCard(
-                  id: stream.data.documents[index]['studentId'],
-                  name: stream.data.documents[index]['studentName'],
-                  standard: stream.data.documents[index]['standard'],
-                );
-              }
-              else{
-                return SizedBox(width: 0, height: 0,);
-              }
-            },
-            itemCount: stream.data.documents.length,
-          );
+
+          // if (stream.data != null) {
+          //   return ListView.builder(
+          //     itemBuilder: (ctx, index) {
+          //       if (currentClassStudents
+          //           .contains(stream.data.documents[index]['uniqueID'])) {
+          //         return StudentListCard(
+          //           id: stream.data.documents[index]['studentId'],
+          //           name: stream.data.documents[index]['studentName'],
+          //           standard: stream.data.documents[index]['standard'],
+          //         );
+          //       } else {
+          //         return SizedBox(
+          //           width: 0,
+          //           height: 0,
+          //         );
+          //       }
+          //     },
+          //     itemCount: stream.data.documents.length,
+          //   );
+          // } else {
+          //   return Text('HARSH');
+          // }
         },
         stream: Firestore.instance.collection('Students').snapshots(),
       ),

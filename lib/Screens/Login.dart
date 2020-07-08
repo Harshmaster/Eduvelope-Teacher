@@ -5,6 +5,8 @@ import 'package:eduvelopeV2/Screens/Signup.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../globalData.dart';
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -21,13 +23,13 @@ class _LoginState extends State<Login> {
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height,
-          child: Column(  
+          child: Column(
             children: <Widget>[
               Container(
                 width: MediaQuery.of(context).size.width - 40,
                 height: MediaQuery.of(context).size.height * 0.3,
                 child: Image.asset('assets/logo.png'),
-              ), 
+              ),
               Container(
                 margin: EdgeInsets.only(
                   left: 20,
@@ -144,18 +146,18 @@ class _LoginState extends State<Login> {
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   children: [
-                    Checkbox(
-                        activeColor: Colors.blue[900],
-                        value: toKeepLoggedIn,
-                        onChanged: (isSelected) {
-                          toKeepLoggedIn = isSelected;
+                    // Checkbox(
+                    //     activeColor: Colors.blue[900],
+                    //     value: toKeepLoggedIn,
+                    //     onChanged: (isSelected) {
+                    //       toKeepLoggedIn = isSelected;
 
-                          setState(() {});
-                        }),
-                    Text(
-                      'Keep Me Logged In',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
+                    //       setState(() {}); 
+                    //     }),
+                    // Text(
+                    //   'Keep Me Logged In',
+                    //   style: TextStyle(fontWeight: FontWeight.w500),
+                    // ),
                     Expanded(
                       child: SizedBox(),
                     ),
@@ -186,8 +188,11 @@ class _LoginState extends State<Login> {
                   ),
                   color: Colors.blue[900],
                   onPressed: () async {
-                    print(userNameController.text);
-                    print(passwordController.text);
+                    
+        
+                    
+                
+
                     await Firestore.instance
                         .collection("Teachers")
                         .where(
@@ -201,6 +206,7 @@ class _LoginState extends State<Login> {
                       if (docs.documents.length == 0) {
                         print("LENGTH IS ZERO");
                       } else {
+                        await getCurrentTeacherRooms(docs.documents[0].data["teacherId"]);
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

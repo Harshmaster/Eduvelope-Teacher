@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ClassroomListWidget extends StatefulWidget {
   final String name;
   final int standard;
-  final int endTiming;
-  final int startTiming;
+  final String endTiming;
+  final String startTiming;
   final int numOfStudents;
 
   ClassroomListWidget({
@@ -29,37 +29,37 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
   String totalStartTime;
   String totalEndTime;
 
-  formatTime() {
-    startTime = widget.startTiming;
-    endTime = widget.endTiming;
+  // formatTime() {
+  //   startTime = widget.startTiming;
+  //   endTime = widget.endTiming;
 
-    if ((startTime / 100) > 12) {
-      int startTimeHours = (startTime / 100).round() - 12;
-      int startTimeMinutes = startTime % 100;
-      totalStartTime = "$startTimeHours:$startTimeMinutes";
-      print(totalStartTime);
-    } else {
-      int startTimeHour = (startTime / 100).round();
-      int startTimeMinutes = startTime % 100;
-      // if (startTimeMinutes == 0) {
-      //   startTimeMinutes = 00;
-      // }
-      totalStartTime = "$startTimeHour: ${startTimeMinutes}";
-      print(totalStartTime);
-    }
+  //   if ((startTime / 100) > 12) {
+  //     int startTimeHours = (startTime / 100).round() - 12;
+  //     int startTimeMinutes = startTime % 100;
+  //     totalStartTime = "$startTimeHours:$startTimeMinutes";
+  //     print(totalStartTime);
+  //   } else {
+  //     int startTimeHour = (startTime / 100).round();
+  //     int startTimeMinutes = startTime % 100;
+  //     // if (startTimeMinutes == 0) {
+  //     //   startTimeMinutes = 00;
+  //     // }
+  //     totalStartTime = "$startTimeHour: ${startTimeMinutes}";
+  //     print(totalStartTime);
+  //   }
 
-    if ((endTime / 100) > 12) {
-      int endTimeHours = (endTime / 100).round() - 12;
-      int endTimeMinutes = endTime % 100;
-      totalEndTime = "$endTimeHours:$endTimeMinutes";
-      print(totalEndTime);
-    } else {
-      int endTimeHour = (endTime / 100).round();
-      int endTimeMinutes = endTime % 100;
-      totalEndTime = "$endTimeHour: ${endTimeMinutes}";
-      print(totalEndTime);
-    }
-  }
+  //   if ((endTime / 100) > 12) {
+  //     int endTimeHours = (endTime / 100).round() - 12;
+  //     int endTimeMinutes = endTime % 100;
+  //     totalEndTime = "$endTimeHours:$endTimeMinutes";
+  //     print(totalEndTime);
+  //   } else {
+  //     int endTimeHour = (endTime / 100).round();
+  //     int endTimeMinutes = endTime % 100;
+  //     totalEndTime = "$endTimeHour: ${endTimeMinutes}";
+  //     print(totalEndTime);
+  //   }
+  // }
 
   @override
   void initState() {
@@ -74,7 +74,7 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    formatTime();
+    // formatTime();
     return InkWell(
       onTap: () {
         getCurrentClassStudents(widget.name);
@@ -143,7 +143,7 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
                   height: 4,
                 ),
                 Text(
-                  "${totalStartTime} - $totalEndTime ",
+                  "${widget.startTiming} - ${widget.endTiming} ",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

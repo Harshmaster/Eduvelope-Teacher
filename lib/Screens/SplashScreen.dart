@@ -5,6 +5,8 @@ import 'package:eduvelopeV2/Screens/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../globalData.dart';
+
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -15,14 +17,24 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String ifLogged = prefs.getString("email");
 
-    Timer(Duration(seconds: 2), () {
+    Timer(Duration(seconds: 1), () {
       if (ifLogged != null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen(),
+            builder: (BuildContext context) => Login(),
           ),
         );
+        // getTeacherId().then((value) {
+        //   getCurrentTeacherRooms(value);
+        // }).then((value) {
+        //   Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (BuildContext context) => HomeScreen(),
+        //     ),
+        //   );
+        // });
       } else {
         Navigator.pushReplacement(
           context,

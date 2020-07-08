@@ -43,9 +43,9 @@ class _LiveClassesState extends State<LiveClasses> {
                       name: sdata.data.documents[index]['className'],
                       standard: sdata.data.documents[index]['standard'],
                       startTiming:
-                          sdata.data.documents[index]['startTiming'].toString(),
+                          sdata.data.documents[index]['start'],
                       endTiming:
-                          sdata.data.documents[index]['endTiming'].toString(),
+                          sdata.data.documents[index]['end'],
                       numOfStudents: sdata.data.documents[index]['students'].length,    
                     );
                   }

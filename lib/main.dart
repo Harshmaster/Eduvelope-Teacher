@@ -1,5 +1,7 @@
+import 'package:eduvelopeV2/Screens/Signup.dart';
 import 'package:eduvelopeV2/Screens/SplashScreen.dart';
 import 'package:flutter/material.dart';
+import './Screens/docUpload.dart';
 
 void main() {
   runApp(MyApp());

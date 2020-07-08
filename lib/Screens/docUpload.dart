@@ -1,32 +1,31 @@
 import 'dart:io';
 
+import 'package:eduvelopeV2/Screens/Login.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import './docUpload.dart';
 
-class UploadDocuments extends StatefulWidget {
+class DocUpload extends StatefulWidget {
   final String id;
-  UploadDocuments({this.id});
+  DocUpload({this.id});
   @override
-  _UploadDocumentsState createState() => _UploadDocumentsState();
+  _DocUploadState createState() => _DocUploadState();
 }
 
-class _UploadDocumentsState extends State<UploadDocuments> {
+class _DocUploadState extends State<DocUpload> {
   File _pickedImage;
-
   pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.camera).then((image)async{
+    await ImagePicker.pickImage(source: ImageSource.camera).then((image) async {
       setState(() {
-      _pickedImage = image;
-    });
-    final ref = FirebaseStorage.instance
-        .ref()
-        .child('userProfile')
-        .child(widget.id + '.jpg');
+        _pickedImage = image;
+      });
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('userDocs')
+          .child(widget.id + '.jpg');
 
-    await ref.putFile(image).onComplete; 
-    });   
+      await ref.putFile(image).onComplete;
+    });
   }
 
   @override
@@ -56,7 +55,7 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                   image: DecorationImage(
                       image: _pickedImage != null
                           ? FileImage(_pickedImage)
-                          : AssetImage('assets/user.png'),
+                          : AssetImage('assets/document.png'),
                       fit: BoxFit.cover),
                 ),
               ),
@@ -79,10 +78,10 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => DocUpload(id:widget.id)));
+                          builder: (BuildContext context) => Login()));
                 },
                 child: Text(
-                  'Next',
+                  'Create Account',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 17,

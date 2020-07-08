@@ -13,6 +13,10 @@ class CreateClassroom extends StatefulWidget {
 class _CreateClassroomState extends State<CreateClassroom> {
   SharedPreferences prefs;
   String teacherID;
+  int startTiming;
+  int startSuffix = 1;
+  int endTiming;
+  int endSuffix = 1;
   getTeacherId() async {
     prefs = await SharedPreferences.getInstance();
     teacherID = prefs.getString("teacherId");
@@ -201,64 +205,385 @@ class _CreateClassroomState extends State<CreateClassroom> {
                   ],
                 ),
               ),
+
               Container(
-                margin: EdgeInsets.only(
-                  left: 20,
-                  right: 29,
-                  top: 20,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                margin: EdgeInsets.only(top: 20),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                      'Start Timing',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    ),
                     Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        "Start Timing",
-                        style: TextStyle(
+                      child: DropdownButton(
+                        isExpanded: false,
+                        value: startTiming,
+                        hint: Text("Start Timing"),
+                        items: [
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('1'),
+                              ],
+                            ),
+                            value: 1,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('2'),
+                              ],
+                            ),
+                            value: 2,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('3'),
+                              ],
+                            ),
+                            value: 3,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('4'),
+                              ],
+                            ),
+                            value: 4,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('5'),
+                              ],
+                            ),
+                            value: 5,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('6'),
+                              ],
+                            ),
+                            value: 6,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('7'),
+                              ],
+                            ),
+                            value: 7,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('8'),
+                              ],
+                            ),
+                            value: 8,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('9'),
+                              ],
+                            ),
+                            value: 9,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('10'),
+                              ],
+                            ),
+                            value: 10,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('11'),
+                              ],
+                            ),
+                            value: 11,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('12'),
+                              ],
+                            ),
+                            value: 12,
+                          ),
+                        ],
+                        onChanged: (whatwaspressed) {
+                          setState(() {
+                            startTiming = whatwaspressed;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
                           color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: TextField(
-                          controller: startTimingController,
-                          enabled: true,
-                          maxLengthEnforced: true,
-                          minLines: 1,
-                          cursorColor: Colors.black,
-                          cursorWidth: 1,
-                          dragStartBehavior: DragStartBehavior.start,
-                          decoration: InputDecoration(
-                            fillColor: Colors.grey[200],
-                            filled: true,
-                            labelStyle: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 17,
-                            ),
-                            hintText: "eg.1630",
+                    DropdownButton(
+                      value: startSuffix,
+                      hint: Text("AM"),
+                      items: [
+                        DropdownMenuItem(
+                          child: Row(
+                            children: <Widget>[
+                              Text('AM'),
+                            ],
                           ),
-                          keyboardType: TextInputType.number,
+                          value: 1,
                         ),
+                        DropdownMenuItem(
+                          child: Row(
+                            children: <Widget>[
+                              Text('PM'),
+                            ],
+                          ),
+                          value: 2,
+                        ),
+                      ],
+                      onChanged: (whatwaspressed) {
+                        setState(() {
+                          startSuffix = whatwaspressed;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.black,
                       ),
                     ),
                   ],
                 ),
               ),
+
               Container(
+                margin: EdgeInsets.only(top: 20),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                      'End Timing',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    ),
+                    Container(
+                      child: DropdownButton(
+                        isExpanded: false,
+                        value: endTiming,
+                        hint: Text("End Timing"),
+                        items: [
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('1'),
+                              ],
+                            ),
+                            value: 1,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('2'),
+                              ],
+                            ),
+                            value: 2,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('3'),
+                              ],
+                            ),
+                            value: 3,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('4'),
+                              ],
+                            ),
+                            value: 4,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('5'),
+                              ],
+                            ),
+                            value: 5,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('6'),
+                              ],
+                            ),
+                            value: 6,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('7'),
+                              ],
+                            ),
+                            value: 7,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('8'),
+                              ],
+                            ),
+                            value: 8,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('9'),
+                              ],
+                            ),
+                            value: 9,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('10'),
+                              ],
+                            ),
+                            value: 10,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('11'),
+                              ],
+                            ),
+                            value: 11,
+                          ),
+                          DropdownMenuItem(
+                            child: Row(
+                              children: <Widget>[
+                                Text('12'),
+                              ],
+                            ),
+                            value: 12,
+                          ),
+                        ],
+                        onChanged: (whatwaspressed) {
+                          setState(() {
+                            endTiming = whatwaspressed;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    DropdownButton(
+                      value: endSuffix,
+                      hint: Text("AM"),
+                      items: [
+                        DropdownMenuItem(
+                          child: Row(
+                            children: <Widget>[
+                              Text('AM'),
+                            ],
+                          ),
+                          value: 1,
+                        ),
+                        DropdownMenuItem(
+                          child: Row(
+                            children: <Widget>[
+                              Text('PM'),
+                            ],
+                          ),
+                          value: 2,
+                        ),
+                      ],
+                      onChanged: (whatwaspressed) {
+                        setState(() {
+                          endSuffix = whatwaspressed;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Container(
+              //   margin: EdgeInsets.only(
+              //     left: 20,
+              //     right: 29,
+              //     top: 20,
+              //   ),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Container(
+              //         margin: EdgeInsets.only(bottom: 10),
+              //         child: Text(
+              //           "Start Timing",
+              //           style: TextStyle(
+              //             color: Colors.black,
+              //             fontSize: 18,
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //         ),
+              //       ),
+              //       Container(
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(40),
+              //         ),
+              //         child: ClipRRect(
+              //           borderRadius: BorderRadius.circular(10),
+              //           child: TextField(
+              //             controller: startTimingController,
+              //             enabled: true,
+              //             maxLengthEnforced: true,
+              //             minLines: 1,
+              //             cursorColor: Colors.black,
+              //             cursorWidth: 1,
+              //             dragStartBehavior: DragStartBehavior.start,
+              //             decoration: InputDecoration(
+              //               fillColor: Colors.grey[200],
+              //               filled: true,
+              //               labelStyle: TextStyle(
+              //                 color: Colors.black,
+              //                 fontSize: 17,
+              //                 fontWeight: FontWeight.w700,
+              //               ),
+              //               enabledBorder: InputBorder.none,
+              //               focusedBorder: InputBorder.none,
+              //               hintStyle: TextStyle(
+              //                 color: Colors.grey,
+              //                 fontSize: 17,
+              //               ),
+              //               hintText: "eg.1630",
+              //             ),
+              //             keyboardType: TextInputType.number,
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+
+              /* Container(
                 margin: EdgeInsets.only(
                   left: 20,
                   right: 29,
@@ -314,7 +639,7 @@ class _CreateClassroomState extends State<CreateClassroom> {
                     ),
                   ],
                 ),
-              ),
+              ), */
               Container(
                 height: 45,
                 margin: EdgeInsets.only(
@@ -329,29 +654,61 @@ class _CreateClassroomState extends State<CreateClassroom> {
                   ),
                   color: Colors.blue[900],
                   onPressed: () async {
+                    int finalStart;
+                    if (startSuffix == 1) {
+                      finalStart = startTiming * 100;
+                    } else {
+                      finalStart = (12 + startTiming) * 100;
+                    }
+
+                    int finalEnd;
+                    if (endSuffix == 1) {
+                      finalEnd = endTiming * 100;
+                    } else {
+                      finalEnd = (12 + endTiming) * 100;
+                    }
+
                     print('creating');
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     print(prefs.getString("teacherId"));
                     currentTeacherClassrooms.add(classNameController.text);
 
-                    await Firestore.instance.collection('Teachers').document(currentTeacherID).updateData({
-                      'classrooms' : currentTeacherClassrooms,
+                    await Firestore.instance
+                        .collection('Teachers')
+                        .document(currentTeacherID)
+                        .updateData({
+                      'classrooms': currentTeacherClassrooms,
                     });
 
+                    String finalStartSuffix;
+                    String finalEndSuffix;
+                    if (startSuffix == 1) {
+                      finalStartSuffix = "Am";
+                    } else {
+                      finalStartSuffix = "Pm";
+                    }
+
+                    if (endSuffix == 1) {
+                      finalEndSuffix = "Am";
+                    } else { 
+                      finalEndSuffix = "Pm";
+                    }
 
                     await Firestore.instance
                         .collection("Classrooms")
                         .document(classNameController.text)
                         .setData({
-                      "active": false, 
+                      "active": false,
                       "className": classNameController.text,
                       "subject": subjectController.text,
                       "standard": int.parse(standardController.text),
-                      "startTiming": int.parse(startTimingController.text),
-                      "endTiming": int.parse(endTimingController.text),
+                      'startTiming': finalStart,
+                      'endTiming': finalEnd,
+                      'start': '$startTiming $finalStartSuffix',
+                      'end': '$endTiming $finalEndSuffix',
                       "teacherID": currentTeacherID,
-                      'students' : [],
+                      'students': [],
                     }).then((value) {
                       showDialog(
                           context: context,

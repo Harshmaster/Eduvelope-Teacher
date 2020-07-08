@@ -13,10 +13,6 @@ class AllClassrooms extends StatefulWidget {
 
 class _AllClassroomsState extends State<AllClassrooms> {
   SharedPreferences prefs;
-  getTeacherId() async {
-    prefs = await SharedPreferences.getInstance();
-    return prefs.getString("teacherId");
-  }
 
   @override
   void initState() {
@@ -28,43 +24,39 @@ class _AllClassroomsState extends State<AllClassrooms> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: FutureBuilder(
-            future: getTeacherId(),
-            builder: (context, myFuture) {
-              return StreamBuilder(
-                initialData: null,
-                stream: Firestore.instance.collection("Classrooms").snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.data != null) {
-                    return Container(
-                      child: Column(
-                        children: List.generate(snapshot.data.documents.length,
-                            (index) {
-                          if (currentTeacherClassrooms.contains(snapshot
-                              .data.documents[index].data["className"])) {
-                            return ClassroomListWidget(
-                              name: snapshot
-                                  .data.documents[index].data["className"],
-                              standard: snapshot
-                                  .data.documents[index].data["standard"],
-                              startTiming: snapshot
-                                  .data.documents[index].data["startTiming"],
-                              endTiming: snapshot
-                                  .data.documents[index].data["endTiming"],
-                              numOfStudents: snapshot.data.documents[index]['students'].length,    
-                            );
-                          } else {
-                            return SizedBox(width:0, height:0);
-                          }
-                        }),
-                      ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
+        child: StreamBuilder(
+          initialData: null,
+          stream: Firestore.instance.collection("Classrooms").snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.data != null) {
+              return Container(
+                child: Column(
+                  children:   
+                      List.generate(snapshot.data.documents.length, (index) {
+                    if (currentTeacherClassrooms.contains(
+                        snapshot.data.documents[index].data["className"])) {
+                      return ClassroomListWidget(
+                        name: snapshot.data.documents[index].data["className"],
+                        standard:
+                            snapshot.data.documents[index].data["standard"],
+                        startTiming:
+                            snapshot.data.documents[index].data["start"],
+                        endTiming:
+                            snapshot.data.documents[index].data["end"],
+                        numOfStudents:
+                            snapshot.data.documents[index]['students'].length,
+                      );
+                    } else {
+                      return null;
+                    }
+                  }).where((element) => element !=null ).toList(),
+                ),
               );
-            }),
+            } else { 
+              return Container();
+            }
+          },
+        ),
       ),
     );
   }

@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eduvelopeV2/Screens/Login.dart';
+import 'package:eduvelopeV2/Screens/documentsUpload.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -454,8 +457,14 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   color: Colors.blue[900],
                   onPressed: () async {
-                    print('working');
                     String teacherId = uuid.v4();
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                UploadDocuments(id:teacherId)));
+
+                    print('working');
                     await Firestore.instance
                         .collection("Teachers")
                         .document(teacherId)
@@ -467,12 +476,12 @@ class _SignupPageState extends State<SignupPage> {
                       "mobile": mobileController.text,
                       "email": emailController.text,
                       "teacherId": teacherId,
-                      "classrooms" : [],
+                      "classrooms": [],
                     }).then((value) {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog( 
+                            return AlertDialog(
                               title: Text('SUCCESS'),
                               content: Text('Account Created Successfully'),
                               actions: <Widget>[
