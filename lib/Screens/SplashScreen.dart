@@ -17,7 +17,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   navigateToHome() async {
     Timer(Duration(seconds: 1), () {
-      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MyApp()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => MyApp()));
     });
   }
 

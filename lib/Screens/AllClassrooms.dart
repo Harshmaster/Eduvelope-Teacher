@@ -30,12 +30,18 @@ class _AllClassroomsState extends State<AllClassrooms> {
           initialData: null,
           stream: Firestore.instance.collection("Classrooms").snapshots(),
           builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
             if (snapshot.data != null) {
               return Container(
                 child: Column(
                   children:
                       List.generate(snapshot.data.documents.length, (index) {
-                    if (snapshot.data.documents[index].data["teacherID"] == currentTeacherId) {
+                    if (snapshot.data.documents[index].data["teacherID"] ==
+                        currentTeacherId) {
                       return ClassroomListWidget(
                         id: snapshot.data.documents[index].data["uid"],
                         name: snapshot.data.documents[index].data["className"],
