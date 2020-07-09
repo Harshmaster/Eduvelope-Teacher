@@ -4,6 +4,8 @@ import 'package:eduvelopeV2/widgets/classroomListCard.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../globalData.dart';
+
 class AllClassrooms extends StatefulWidget {
   @override
   _AllClassroomsState createState() {
@@ -31,28 +33,27 @@ class _AllClassroomsState extends State<AllClassrooms> {
             if (snapshot.data != null) {
               return Container(
                 child: Column(
-                  children:   
+                  children:
                       List.generate(snapshot.data.documents.length, (index) {
-                    if (currentTeacherClassrooms.contains(
-                        snapshot.data.documents[index].data["className"])) {
+                    if (snapshot.data.documents[index].data["teacherID"] == currentTeacherId) {
                       return ClassroomListWidget(
+                        id: snapshot.data.documents[index].data["uid"],
                         name: snapshot.data.documents[index].data["className"],
                         standard:
                             snapshot.data.documents[index].data["standard"],
                         startTiming:
                             snapshot.data.documents[index].data["start"],
-                        endTiming:
-                            snapshot.data.documents[index].data["end"],
+                        endTiming: snapshot.data.documents[index].data["end"],
                         numOfStudents:
                             snapshot.data.documents[index]['students'].length,
                       );
                     } else {
                       return null;
                     }
-                  }).where((element) => element !=null ).toList(),
+                  }).where((element) => element != null).toList(),
                 ),
               );
-            } else { 
+            } else {
               return Container();
             }
           },

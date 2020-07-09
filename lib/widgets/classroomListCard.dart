@@ -4,7 +4,12 @@ import 'package:eduvelopeV2/Screens/Students/localData.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../globalData.dart';
+import '../globalData.dart';
+import '../globalData.dart';
+
 class ClassroomListWidget extends StatefulWidget {
+  final String id;
   final String name;
   final int standard;
   final String endTiming;
@@ -12,6 +17,7 @@ class ClassroomListWidget extends StatefulWidget {
   final int numOfStudents;
 
   ClassroomListWidget({
+    this.id,
     this.name,
     this.standard,
     this.endTiming,
@@ -24,6 +30,7 @@ class ClassroomListWidget extends StatefulWidget {
 }
 
 class _ClassroomListWidgetState extends State<ClassroomListWidget> {
+  bool _loading = false;
   int startTime;
   int endTime;
   String totalStartTime;
@@ -77,11 +84,12 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
     // formatTime();
     return InkWell(
       onTap: () {
-        getCurrentClassStudents(widget.name);
+        getCurrentClassStudents(widget.id);
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => StudentsTabBar(
+                      id: widget.id,
                       classroomName: widget.name,
                       standard: widget.standard,
                     )));
@@ -107,50 +115,128 @@ class _ClassroomListWidgetState extends State<ClassroomListWidget> {
             ),
           ),
           width: MediaQuery.of(context).size.width,
-          child: Container(
-            margin: EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  widget.name,
-                  style: TextStyle(
-                    color: Colors.blue[900],
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  '${widget.numOfStudents} Students',
-                  style: TextStyle(
-                    color: Colors.amber[900],
-                    fontSize: 16,
-                  ),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  'Class ${widget.standard}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  "${widget.startTiming} - ${widget.endTiming} ",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+          child: _loading
+              ? Center(
+                  child: CircularProgressIndicator(),
                 )
-              ],
-            ),
-          ),
+              : Container(
+                  margin: EdgeInsets.all(8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            widget.name,
+                            style: TextStyle(
+                              color: Colors.blue[900],
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            '${widget.numOfStudents} Students',
+                            style: TextStyle(
+                              color: Colors.amber[900],
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            'Class ${widget.standard}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            "${widget.startTiming} - ${widget.endTiming} ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 40,
+                        ),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('Confirm'),
+                                content: Text(
+                                    'Do you want to delete the classroom?'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _loading = true;
+                                      });
+                                      currentTeacherClassrooms
+                                          .remove(widget.id);
+                                      Firestore.instance
+                                          .collection('Teachers')
+                                          .document(currentTeacherId)
+                                          .updateData({
+                                        'classrooms': currentTeacherClassrooms,
+                                      }).then((v) {
+                                        Firestore.instance
+                                            .collection('Classrooms')
+                                            .where('uid', isEqualTo: widget.id)
+                                            .getDocuments()
+                                            .then((value) {
+                                          value.documents.forEach((element) {
+                                            element.reference.delete();
+                                          });
+                                        });
+                                      }).then((v) {
+                                        var query = Firestore.instance
+                                            .collection('Students')
+                                            .where('classID',
+                                                isEqualTo: widget.id)
+                                            .getDocuments()
+                                            .then((value) => {
+                                                  value.documents
+                                                      .forEach((element) {
+                                                    element.reference.delete();
+                                                  })
+                                                });
+                                        setState(() {
+                                          _loading = false;
+                                        });
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
         ),
       ),
     );

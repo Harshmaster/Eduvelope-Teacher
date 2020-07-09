@@ -1,8 +1,10 @@
 import 'package:eduvelopeV2/Screens/ClassroomTabBar.dart';
 import 'package:eduvelopeV2/Screens/LiveClassroomTabBar.dart';
-import 'package:eduvelopeV2/Screens/Login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../globalData.dart';
+import '../globalData.dart';
 import '../globalData.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,6 +15,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
+    FirebaseAuth.instance.currentUser().then((user){
+      currentTeacherId = user.uid;
+      getCurrentTeacherRooms(user.uid);
+      getCurrentTeacherName(user.uid); 
+    });
     super.initState();
   }
 
@@ -41,15 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             actions: <Widget>[
                               FlatButton(
                                 onPressed: () async {
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  prefs.setString("email", null);
+                                  FirebaseAuth.instance.signOut();
                                   Navigator.of(context).pop();
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              Login()));
                                 },
                                 child: Text('OK'),
                               )

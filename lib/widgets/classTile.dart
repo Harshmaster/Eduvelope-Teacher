@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ClassTile extends StatefulWidget {
+  final String id;
   final String name;
   final int standard;
   final String startTiming;
@@ -16,6 +17,7 @@ class ClassTile extends StatefulWidget {
 
   ClassTile(
       {this.name,
+      this.id,
       this.standard,
       this.isLive,
       this.endTiming,
@@ -147,10 +149,13 @@ class _ClassTileState extends State<ClassTile> {
       getTeacherId().then((value) {
         Firestore.instance
             .collection('Classrooms')
-            .document(widget.name)
-            .updateData({
-          'active': true,
-        });
+            .where('uid', isEqualTo: widget.id).getDocuments().then((value){
+              value.documents.forEach((element) {
+                element.reference.updateData({
+                  'active':true,
+                });
+              });
+            });
       });
       await Navigator.push(
         context,

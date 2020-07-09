@@ -9,9 +9,10 @@ import 'StudentListCar.dart';
 import 'StudentListCar.dart';
 
 class AllStudents extends StatefulWidget {
+  final String id;
   final String name;
   final int standard;
-  AllStudents({this.name, this.standard});
+  AllStudents({this.name, this.standard,this.id});
   @override
   _AllStudentsState createState() => _AllStudentsState();
 }
@@ -29,12 +30,13 @@ class _AllStudentsState extends State<AllStudents> {
               children: List.generate(
                 stream.data.documents.length,
                 (index) {
-                  if (currentClassStudents
-                      .contains(stream.data.documents[index]['uniqueID'])) {
+                  if (stream.data.documents[index]['classID'] == widget.id) {
                     return StudentListCard(
+                      uid: stream.data.documents[index]['uniqueID'],
                       id: stream.data.documents[index]['studentId'],
                       name: stream.data.documents[index]['studentName'],
                       standard: stream.data.documents[index]['standard'],
+                      classuid: stream.data.documents[index]['classID'],
                     );
                   } else {
                     return null;

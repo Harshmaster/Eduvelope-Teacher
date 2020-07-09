@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../globalData.dart';
+
 class LiveClasses extends StatefulWidget {
   @override
   _LiveClassesState createState() => _LiveClassesState();
@@ -36,17 +38,17 @@ class _LiveClassesState extends State<LiveClasses> {
                       sdata.data.documents[index]['endTiming'] >
                           int.parse(DateFormat.H().format(DateTime.now())) *
                               100 &&
-                      currentTeacherClassrooms
-                          .contains(sdata.data.documents[index]['className'])) {
+                      (sdata.data.documents[index]['teacherID'] ==
+                          currentTeacherId)) {
                     return ClassTile(
+                      id: sdata.data.documents[index]['uid'],
                       isLive: true,
                       name: sdata.data.documents[index]['className'],
                       standard: sdata.data.documents[index]['standard'],
-                      startTiming:
-                          sdata.data.documents[index]['start'],
-                      endTiming:
-                          sdata.data.documents[index]['end'],
-                      numOfStudents: sdata.data.documents[index]['students'].length,    
+                      startTiming: sdata.data.documents[index]['start'],
+                      endTiming: sdata.data.documents[index]['end'],
+                      numOfStudents:
+                          sdata.data.documents[index]['students'].length,
                     );
                   }
                   return SizedBox(

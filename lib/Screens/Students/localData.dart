@@ -2,19 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 List<String> currentClassStudents = new List<String>();
 
-getCurrentClassStudents(className) {
+getCurrentClassStudents(classid) {
   currentClassStudents.clear();
   print('cleared');
   print(currentClassStudents);
   Firestore.instance
       .collection('Classrooms')
-      .document(className)
-      .get()
-      .then((docSnapshot) {
-        for(var i = 0; i<docSnapshot.data['students'].length;i++){
-          currentClassStudents.add(docSnapshot.data['students'][i]);
-        }
-        print('Students are: ');
-        print(currentClassStudents);
+      .where('classID', isEqualTo: classid).getDocuments().then((value){
+        value.documents.forEach((element) {
+          for(var i=0;i<element.data['students'];i++){
+            currentClassStudents.add(element.data['students'][i]);
+          }
+        });
       });
 }

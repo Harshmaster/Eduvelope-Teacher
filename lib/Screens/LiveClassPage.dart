@@ -9,12 +9,13 @@ import '../utils/settings.dart';
 class LiveClassPage extends StatefulWidget {
   /// non-modifiable channel name of the page
   final String channelName;
+  final String id;
 
   /// non-modifiable client role of the page
   final ClientRole role;
 
   /// Creates a call page with given channel name.
-  const LiveClassPage({Key key, this.channelName, this.role}) : super(key: key);
+  const LiveClassPage({Key key, this.channelName, this.role, this.id}) : super(key: key);
 
   @override
   _LiveClassPageState createState() => _LiveClassPageState();
@@ -286,9 +287,17 @@ class _LiveClassPageState extends State<LiveClassPage> {
   }
 
   void _onCallEnd(BuildContext context) {
-    getTeacherId().then((value){
-      Firestore.instance.collection('Classrooms').document(widget.channelName).updateData({
-        'active' : false, 
+    getTeacherId().then((value) {
+      Firestore.instance
+          .collection('Classrooms')
+          .where('uid', isEqualTo: widget.id)
+          .getDocuments()
+          .then((value) {
+        value.documents.forEach((element) {
+          element.reference.updateData({
+            'active': false,
+          });
+        });
       });
     });
     Navigator.pop(context);
@@ -309,7 +318,7 @@ class _LiveClassPageState extends State<LiveClassPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agora Flutter QuickStart'),
+        title: Text('${widget.channelName} Live Class'),
       ),
       backgroundColor: Colors.black,
       body: Center(

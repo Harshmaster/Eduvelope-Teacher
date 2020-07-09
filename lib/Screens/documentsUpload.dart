@@ -6,8 +6,19 @@ import 'package:image_picker/image_picker.dart';
 import './docUpload.dart';
 
 class UploadDocuments extends StatefulWidget {
-  final String id;
-  UploadDocuments({this.id});
+  final String firstname;
+  final String lastname;
+  final String institute;
+  final String email;
+  final String password;
+  final String mobile;
+  UploadDocuments(
+      {this.email,
+      this.firstname,
+      this.institute,
+      this.lastname,
+      this.mobile,
+      this.password});
   @override
   _UploadDocumentsState createState() => _UploadDocumentsState();
 }
@@ -16,17 +27,19 @@ class _UploadDocumentsState extends State<UploadDocuments> {
   File _pickedImage;
 
   pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.camera).then((image)async{
+    await ImagePicker.pickImage(
+            source: ImageSource.camera, maxHeight: 400, maxWidth: 400)
+        .then((image) async {
       setState(() {
-      _pickedImage = image;
-    });
-    final ref = FirebaseStorage.instance
-        .ref()
-        .child('userProfile')
-        .child(widget.id + '.jpg');
+        _pickedImage = image;
+      });
+      /*  final ref = FirebaseStorage.instance
+          .ref()
+          .child('userProfile')
+          .child(widget.id + '.jpg');
 
-    await ref.putFile(image).onComplete; 
-    });   
+      await ref.putFile(image).onComplete; */
+    });
   }
 
   @override
@@ -76,10 +89,38 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                     side: BorderSide(color: Colors.blue[900])),
                 color: Colors.blue[900],
                 onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => DocUpload(id:widget.id)));
+                  if (_pickedImage == null) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Error'),
+                          content: Text('Please upload a profile picture.'),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('OK'),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => DocUpload(
+                                  email: widget.email,
+                                  firstname: widget.firstname,
+                                  institute: widget.institute,
+                                  lastname: widget.lastname,
+                                  mobile: widget.mobile,
+                                  password: widget.password,
+                                  profilepic: _pickedImage,
+                                )));
+                  }
                 },
                 child: Text(
                   'Next',

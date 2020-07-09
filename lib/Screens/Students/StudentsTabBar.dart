@@ -1,12 +1,14 @@
-
 import 'package:eduvelopeV2/Screens/Students/AddStudents.dart';
 import 'package:eduvelopeV2/Screens/Students/AllStudents.dart';
+import 'package:eduvelopeV2/globalData.dart';
 import 'package:flutter/material.dart';
 
 class StudentsTabBar extends StatefulWidget {
+  final String id;
   final String classroomName;
   final int standard;
   StudentsTabBar({
+    this.id,
     this.classroomName,
     this.standard,
   });
@@ -28,8 +30,7 @@ class _StudentsTabBarState extends State<StudentsTabBar> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(90),
             child: AppBar(
-              title: Text('Teacher Name'),
-              automaticallyImplyLeading: false,
+              title: Text(currentTeacherName),
               backgroundColor: Colors.blue[900],
               elevation: 0,
               bottom: TabBar(
@@ -59,12 +60,14 @@ class _StudentsTabBarState extends State<StudentsTabBar> {
           ),
           body: TabBarView(children: [
             AllStudents(
+              id: widget.id,
               name: widget.classroomName,
               standard: widget.standard,
             ),
             AddStudents(
               className: widget.classroomName,
               standard: widget.standard,
+              id: widget.id,
             ),
           ]),
         ));
