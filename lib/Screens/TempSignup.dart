@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -464,6 +465,7 @@ class _TempSignupState extends State<TempSignup> {
                           setState(() {
                             _loading = true;
                           });
+                          var userslen;
                           var firstname = firstNameController.text;
                           var lastname = lastNameController.text;
                           var institute = instituteController.text;
@@ -471,149 +473,207 @@ class _TempSignupState extends State<TempSignup> {
                           var cnf = confirmPasswordController.text;
                           var mobile = mobileController.text;
                           var email = emailController.text;
-                          if (firstname.isEmpty) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text('Name is required!!!'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        setState(() {
-                                          _loading = false;
-                                        });
-                                      },
-                                      child: Text('OK'),
-                                    )
-                                  ],
+                          try {
+                            Firestore.instance
+                                .collection('Teachers')
+                                .where('mobile', isEqualTo: mobile)
+                                .getDocuments()
+                                .then((v) {
+                              userslen = v.documents.length;
+                            }).then((v) {
+                              if (firstname.isEmpty) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Error'),
+                                      content: Text('Name is required!!!'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                          },
+                                          child: Text('OK'),
+                                        )
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          } else if (institute.isEmpty) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text('Institue name is required'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        setState(() {
-                                          _loading = false;
-                                        });
-                                      },
-                                      child: Text('OK'),
-                                    )
-                                  ],
+                              } else if (institute.isEmpty) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Error'),
+                                      content:
+                                          Text('Institue name is required'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                          },
+                                          child: Text('OK'),
+                                        )
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          } else if (password.isEmpty) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text('Password is required.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        setState(() {
-                                          _loading = false;
-                                        });
-                                      },
-                                      child: Text('OK'),
-                                    )
-                                  ],
+                              } else if (password.isEmpty) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Error'),
+                                      content: Text('Password is required.'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                          },
+                                          child: Text('OK'),
+                                        )
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          } else if (cnf != password) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text(
-                                      'Confirm password and password do not match.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        setState(() {
-                                          _loading = false;
-                                        });
-                                      },
-                                      child: Text('OK'),
-                                    )
-                                  ],
+                              } else if (cnf != password) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Error'),
+                                      content: Text(
+                                          'Confirm password and password do not match.'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                          },
+                                          child: Text('OK'),
+                                        )
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          } else if (mobile.isEmpty || mobile.length != 10) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text(
-                                      'Please enter a valid mobile number.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        setState(() {
-                                          _loading = false;
-                                        });
-                                      },
-                                      child: Text('OK'),
-                                    )
-                                  ],
+                              } else if (mobile.isEmpty ||
+                                  mobile.length != 10) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Error'),
+                                      content: Text(
+                                          'Please enter a valid mobile number.'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                          },
+                                          child: Text('OK'),
+                                        )
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          } else if (email.isEmpty ||
-                              !email.contains('@') ||
-                              !email.contains('.com')) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text('Please enter a valid email'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        setState(() {
-                                          _loading = false;
-                                        });
-                                      },
-                                      child: Text('OK'),
-                                    )
-                                  ],
+                              } else if (email.isEmpty ||
+                                  !email.contains('@') ||
+                                  !email.contains('.com')) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Error'),
+                                      content:
+                                          Text('Please enter a valid email'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                          },
+                                          child: Text('OK'),
+                                        )
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
+                              } else if (userslen != 0) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Error'),
+                                      content: Text(
+                                          'User with the following mobile already exists.'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                          },
+                                          child: Text('OK'),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         UploadDocuments(
-                                          email: email,
-                                          firstname: firstname,
-                                          institute: institute,
-                                          lastname: lastname,
-                                          mobile: mobile,
-                                          password: password,
-                                        )));
+                                      email: email,
+                                      firstname: firstname,
+                                      institute: institute,
+                                      lastname: lastname,
+                                      mobile: mobile,
+                                      password: password,
+                                    ),
+                                  ),
+                                );
+                              }
+                            });
+                          } catch (err) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Error'),
+                                  content: Text(err.message),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        setState(() {
+                                          _loading = false;
+                                        });
+                                      },
+                                      child: Text('OK'),
+                                    )
+                                  ],
+                                );
+                              },
+                            );
                           }
                         },
                         child: Text(

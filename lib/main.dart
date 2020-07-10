@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
         builder: (context, authSnapshot) {
           if (authSnapshot.hasData) {
-            return HomeScreen();
+            return HomeScreen(mobile: false,);
           } else {
             return TempLogin();
           }

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduvelopeV2/Screens/HomeScreen.dart';
 import 'package:eduvelopeV2/Screens/TempSignup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -13,8 +15,10 @@ class TempLogin extends StatefulWidget {
 }
 
 class _TempLoginState extends State<TempLogin> {
+  bool _mobile = false;
   bool _loading = false;
   AuthResult _authResult;
+  final TextEditingController mobileController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   @override
@@ -34,61 +38,119 @@ class _TempLoginState extends State<TempLogin> {
                       height: MediaQuery.of(context).size.height * 0.3,
                       child: Image.asset('assets/logo.png'),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        left: 20,
-                        right: 29,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              "Username",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    !_mobile
+                        ? Container(
+                            margin: EdgeInsets.only(
+                              left: 20,
+                              right: 29,
                             ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: TextField(
-                                controller: userNameController,
-                                enabled: true,
-                                maxLengthEnforced: true,
-                                minLines: 1,
-                                cursorColor: Colors.black,
-                                cursorWidth: 1,
-                                dragStartBehavior: DragStartBehavior.start,
-                                decoration: InputDecoration(
-                                  fillColor: Colors.grey[200],
-                                  filled: true,
-                                  labelStyle: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    "Email",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 17,
-                                  ),
-                                  hintText: "Enter Email",
                                 ),
-                              ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: TextField(
+                                      controller: userNameController,
+                                      enabled: true,
+                                      maxLengthEnforced: true,
+                                      minLines: 1,
+                                      cursorColor: Colors.black,
+                                      cursorWidth: 1,
+                                      dragStartBehavior:
+                                          DragStartBehavior.start,
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.grey[200],
+                                        filled: true,
+                                        labelStyle: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        hintStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 17,
+                                        ),
+                                        hintText: "Enter Email",
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(
+                            margin: EdgeInsets.only(
+                              left: 20,
+                              right: 29,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    "Mobile Number",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: TextField(
+                                      controller: mobileController,
+                                      enabled: true,
+                                      maxLengthEnforced: true,
+                                      minLines: 1,
+                                      cursorColor: Colors.black,
+                                      cursorWidth: 1,
+                                      dragStartBehavior:
+                                          DragStartBehavior.start,
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.grey[200],
+                                        filled: true,
+                                        labelStyle: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        hintStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 17,
+                                        ),
+                                        hintText: "Enter Mobile Number",
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
                     Container(
                       margin: EdgeInsets.only(
                         left: 20,
@@ -165,12 +227,27 @@ class _TempLoginState extends State<TempLogin> {
                           Expanded(
                             child: SizedBox(),
                           ),
-                          Text(
-                            'Forgot Password',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.blue[900],
-                            ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _mobile = !_mobile;
+                              });
+                            },
+                            child: _mobile
+                                ? Text(
+                                    'Login with Email',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.blue[900],
+                                    ),
+                                  )
+                                : Text(
+                                    'Login with Mobile',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.blue[900],
+                                    ),
+                                  ),
                           ),
                         ],
                       ),
@@ -178,87 +255,219 @@ class _TempLoginState extends State<TempLogin> {
                     Expanded(
                       child: SizedBox(),
                     ),
-                    Container(
-                      height: 45,
-                      margin: EdgeInsets.only(
-                        top: 20,
-                        left: 20,
-                        right: 20,
-                      ),
-                      width: double.infinity,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        color: Colors.blue[900],
-                        onPressed: () async {
-                          var email = userNameController.text;
-                          var password = passwordController.text;
-                          if (!email.contains('.com') || !email.contains('@')) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text('Invalid Email.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('OK'),
-                                    )
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            setState(() {
-                              _loading = true;
-                            });
-                            try {
-                              _authResult = await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: email, password: password);
-
-                              currentTeacherId = _authResult.user.uid;                
-                            } catch (err) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text('Error'),
-                                    content: Text(err.message),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          setState(() {
-                                            _loading = false;
-                                          });
-                                        },
-                                        child: Text('OK'),
-                                      )
-                                    ],
+                    !_mobile
+                        ? Container(
+                            height: 45,
+                            margin: EdgeInsets.only(
+                              top: 20,
+                              left: 20,
+                              right: 20,
+                            ),
+                            width: double.infinity,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              color: Colors.blue[900],
+                              onPressed: () async {
+                                var email = userNameController.text;
+                                var password = passwordController.text;
+                                if (!email.contains('.com') ||
+                                    !email.contains('@')) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('Error'),
+                                        content: Text('Invalid Email.'),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('OK'),
+                                          )
+                                        ],
+                                      );
+                                    },
                                   );
-                                },
-                              );
-                            }
-                            setState(() {
-                              _loading = false;
-                            });
-                          }
-                        },
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
+                                } else {
+                                  setState(() {
+                                    _loading = true;
+                                  });
+                                  try {
+                                    _authResult = await FirebaseAuth.instance
+                                        .signInWithEmailAndPassword(
+                                            email: email, password: password);
+
+                                    currentTeacherId = _authResult.user.uid;
+                                  } catch (err) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text('Error'),
+                                          content: Text(err.message),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                setState(() {
+                                                  _loading = false;
+                                                });
+                                              },
+                                              child: Text('OK'),
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                  setState(() {
+                                    _loading = false;
+                                  });
+                                }
+                              },
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 45,
+                            margin: EdgeInsets.only(
+                              top: 20,
+                              left: 20,
+                              right: 20,
+                            ),
+                            width: double.infinity,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              color: Colors.blue[900],
+                              onPressed: () async {
+                                var mobile = mobileController.text;
+                                var password = passwordController.text;
+                                if (mobile.length != 10) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('Error'),
+                                        content: Text(
+                                            'Please enter a valid mobile number'),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('OK'),
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  setState(() {
+                                    _loading = true;
+                                  });
+                                  try {
+                                    Firestore.instance
+                                        .collection('Teachers')
+                                        .where('mobile', isEqualTo: mobile)
+                                        .where('password', isEqualTo: password)
+                                        .getDocuments()
+                                        .then((v) {
+                                      if (v.documents.length == 0) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text('Error'),
+                                              content: Text(
+                                                  'No such user exists please enter valid credentials'),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    setState(() {
+                                                      _loading = false;
+                                                    });
+                                                  },
+                                                  child: Text('OK'),
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        v.documents.forEach((element) {
+                                          currentTeacherId = element.documentID;
+                                          currentTeacherClassrooms.clear();
+                                          for (var i = 0;
+                                              i <
+                                                  element.data['classrooms']
+                                                      .length;
+                                              i++) {
+                                            currentTeacherClassrooms.add(
+                                                element.data['classrooms'][i]);
+                                          }
+                                          currentTeacherName =
+                                              '${element.data['firstName']} ${element.data['lastName']}';
+                                        });
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        HomeScreen(
+                                                          mobile: true,
+                                                        )));
+                                      }
+                                    }).then((v) {});
+                                    setState(() {
+                                      _loading = false;
+                                    });
+                                  } catch (err) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text('Error'),
+                                          content: Text(err.message),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                setState(() {
+                                                  _loading = false;
+                                                });
+                                              },
+                                              child: Text('OK'),
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                }
+                              },
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                     Container(
                       height: 45,
                       margin: EdgeInsets.only(
