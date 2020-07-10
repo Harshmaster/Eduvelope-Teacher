@@ -583,7 +583,7 @@ class _AddStudentsState extends State<AddStudents> {
                             "studentName": nameController.text,
                             "email": emailController.text,
                             "mobile": int.parse(mobileController.text),
-                            "studentId": studentIDController.text,
+                            "studentId": studentLiveClassIDController.text,
                             "studentFees": feesController.text,
                             "feesDate": feesDateController.text,
                             'standard': widget.standard,
