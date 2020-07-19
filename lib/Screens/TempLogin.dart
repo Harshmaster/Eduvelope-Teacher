@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eduvelopeV2/Screens/ForgotPasswordScreen.dart';
 import 'package:eduvelopeV2/Screens/HomeScreen.dart';
 import 'package:eduvelopeV2/Screens/TempSignup.dart';
+import 'package:eduvelopeV2/widgets/sendResetPasswordButton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ class TempLogin extends StatefulWidget {
 }
 
 class _TempLoginState extends State<TempLogin> {
+  bool _valid = false;
   bool _mobile = false;
   bool _loading = false;
   AuthResult _authResult;
@@ -211,7 +214,26 @@ class _TempLoginState extends State<TempLogin> {
                       margin: EdgeInsets.only(right: 30, top: 20),
                       width: MediaQuery.of(context).size.width,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
+                          InkWell(
+                            child: Text(
+                              'Forgot Password',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.blue[900],
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ForgotPasswordScreen(),
+                                ),
+                              );
+                            },
+                          ),
                           // Checkbox(
                           //     activeColor: Colors.blue[900],
                           //     value: toKeepLoggedIn,
@@ -224,9 +246,7 @@ class _TempLoginState extends State<TempLogin> {
                           //   'Keep Me Logged In',
                           //   style: TextStyle(fontWeight: FontWeight.w500),
                           // ),
-                          Expanded(
-                            child: SizedBox(),
-                          ),
+
                           InkWell(
                             onTap: () {
                               setState(() {
@@ -407,28 +427,44 @@ class _TempLoginState extends State<TempLogin> {
                                           },
                                         );
                                       } else {
+                                        var email = '';
                                         v.documents.forEach((element) {
-                                          currentTeacherId = element.documentID;
-                                          currentTeacherClassrooms.clear();
-                                          for (var i = 0;
-                                              i <
-                                                  element.data['classrooms']
-                                                      .length;
-                                              i++) {
-                                            currentTeacherClassrooms.add(
-                                                element.data['classrooms'][i]);
-                                          }
-                                          currentTeacherName =
-                                              '${element.data['firstName']} ${element.data['lastName']}';
+                                          email = element.data['email'];
                                         });
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        HomeScreen(
-                                                          mobile: true,
-                                                        )));
+                                        try {
+                                          FirebaseAuth.instance
+                                              .signInWithEmailAndPassword(
+                                                  email: email,
+                                                  password: password)
+                                              .then((user) {
+                                            currentTeacherId = user.user.uid;
+                                            setState(() {
+                                              _loading = false;
+                                            });
+                                          });
+                                        } catch (err) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text('Error'),
+                                                content: Text(err.message),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      setState(() {
+                                                        _loading = false;
+                                                      });
+                                                    },
+                                                    child: Text('OK'),
+                                                  )
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        }
                                       }
                                     }).then((v) {});
                                     setState(() {

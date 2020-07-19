@@ -26,9 +26,25 @@ class UploadDocuments extends StatefulWidget {
 class _UploadDocumentsState extends State<UploadDocuments> {
   File _pickedImage;
 
-  pickImage() async {
+  pickImageCamera() async {
     await ImagePicker.pickImage(
             source: ImageSource.camera, maxHeight: 400, maxWidth: 400)
+        .then((image) async {
+      setState(() {
+        _pickedImage = image;
+      });
+      /*  final ref = FirebaseStorage.instance
+          .ref()
+          .child('userProfile')
+          .child(widget.id + '.jpg');
+
+      await ref.putFile(image).onComplete; */
+    });
+  }
+
+  pickImageGallery() async {
+    await ImagePicker.pickImage(
+            source: ImageSource.gallery, maxHeight: 400, maxWidth: 400)
         .then((image) async {
       setState(() {
         _pickedImage = image;
@@ -52,13 +68,11 @@ class _UploadDocumentsState extends State<UploadDocuments> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Tap to Upload your Profile Picture',
+              'Upload your Profile Picture',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             InkWell(
-              onTap: () {
-                pickImage();
-              },
+              onTap: null,
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 60, vertical: 20),
                 height: 300,
@@ -73,6 +87,36 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                       fit: BoxFit.cover),
                 ),
               ),
+            ),
+            RaisedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Choose'),
+                      content: Text('Select a method.'),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            pickImageCamera();
+                          },
+                          child: Text('Camera'),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            pickImageGallery(); 
+                          },
+                          child: Text('Gallery'),
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text('Upload Image'),
             ),
             Container(
               height: 45,

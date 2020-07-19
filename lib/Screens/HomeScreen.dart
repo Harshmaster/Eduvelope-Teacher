@@ -9,8 +9,6 @@ import '../globalData.dart';
 import '../globalData.dart';
 
 class HomeScreen extends StatefulWidget {
-  final bool mobile;
-  HomeScreen({this.mobile});
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -18,13 +16,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    if (!widget.mobile) {
-      FirebaseAuth.instance.currentUser().then((user) {
-        currentTeacherId = user.uid;
-        getCurrentTeacherRooms(user.uid);
-        getCurrentTeacherName(user.uid);
-      });
-    }
+    FirebaseAuth.instance.currentUser().then((user) {
+      currentTeacherId = user.uid;
+      getCurrentTeacherRooms(user.uid);
+      getCurrentTeacherName(user.uid);
+    });
+
     super.initState();
   }
 
@@ -52,22 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             content: Text('Do you want To Logout ?'),
                             actions: <Widget>[
                               FlatButton(
-                                onPressed: widget.mobile
-                                    ? () async {
-                                      currentTeacherClassrooms.clear();
-                                      currentTeacherId='';
-                                      currentTeacherName = '';
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        MyApp()));
-                                      }
-                                    : () async {
-                                        FirebaseAuth.instance.signOut();
-                                        Navigator.of(context).pop();
-                                      },
+                                onPressed: () async {
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.of(context).pop();
+                                },
                                 child: Text('OK'),
                               )
                             ],

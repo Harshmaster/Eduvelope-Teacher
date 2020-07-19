@@ -11,7 +11,7 @@ void main() {
 }
 
 class MyApp2 extends StatelessWidget {
-   @override
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primaryColor: Colors.blue[900]),
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
         builder: (context, authSnapshot) {
           if (authSnapshot.hasData) {
-            return HomeScreen(mobile: false,);
+            return HomeScreen();
           } else {
             return TempLogin();
           }
