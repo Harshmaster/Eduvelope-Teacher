@@ -15,6 +15,8 @@ class CreateClassroom extends StatefulWidget {
 }
 
 class _CreateClassroomState extends State<CreateClassroom> {
+  TextEditingController startMinutesController = TextEditingController();
+  TextEditingController endMinutesController = TextEditingController();
   bool _loading = false;
   var uuid = Uuid();
   SharedPreferences prefs;
@@ -43,6 +45,7 @@ class _CreateClassroomState extends State<CreateClassroom> {
           : SingleChildScrollView(
               child: Container(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
                       margin: EdgeInsets.only(
@@ -213,18 +216,20 @@ class _CreateClassroomState extends State<CreateClassroom> {
                         ],
                       ),
                     ),
-
+                    Container(
+                      margin: EdgeInsets.only(top: 20, left: 20, bottom: 8),
+                      child: Text(
+                        'Start Timing',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       width: MediaQuery.of(context).size.width,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          Text(
-                            'Start Timing',
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
-                          ),
                           Container(
                             child: DropdownButton(
                               isExpanded: false,
@@ -339,6 +344,16 @@ class _CreateClassroomState extends State<CreateClassroom> {
                               ),
                             ),
                           ),
+                          Container(
+                            width: 58,
+                            child: TextField(
+                              controller: startMinutesController,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Minutes"),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
                           DropdownButton(
                             value: startSuffix,
                             hint: Text("AM"),
@@ -373,21 +388,23 @@ class _CreateClassroomState extends State<CreateClassroom> {
                         ],
                       ),
                     ),
-
+                    Container(
+                      margin: EdgeInsets.only(top: 20, left: 20, bottom: 8),
+                      child: Text(
+                        'End Timing',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       width: MediaQuery.of(context).size.width,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          Text(
-                            'End Timing',
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
-                          ),
                           Container(
                             child: DropdownButton(
-                              isExpanded: false,
+                              isExpanded: false,   
                               value: endTiming,
                               hint: Text("End Timing"),
                               items: [
@@ -499,6 +516,16 @@ class _CreateClassroomState extends State<CreateClassroom> {
                               ),
                             ),
                           ),
+                          Container(
+                            width: 58,
+                            child: TextField( 
+                              controller: endMinutesController,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Minutes"),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
                           DropdownButton(
                             value: endSuffix,
                             hint: Text("AM"),
@@ -533,121 +560,6 @@ class _CreateClassroomState extends State<CreateClassroom> {
                         ],
                       ),
                     ),
-                    // Container(
-                    //   margin: EdgeInsets.only(
-                    //     left: 20,
-                    //     right: 29,
-                    //     top: 20,
-                    //   ),
-                    //   child: Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       Container(
-                    //         margin: EdgeInsets.only(bottom: 10),
-                    //         child: Text(
-                    //           "Start Timing",
-                    //           style: TextStyle(
-                    //             color: Colors.black,
-                    //             fontSize: 18,
-                    //             fontWeight: FontWeight.bold,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       Container(
-                    //         decoration: BoxDecoration(
-                    //           borderRadius: BorderRadius.circular(40),
-                    //         ),
-                    //         child: ClipRRect(
-                    //           borderRadius: BorderRadius.circular(10),
-                    //           child: TextField(
-                    //             controller: startTimingController,
-                    //             enabled: true,
-                    //             maxLengthEnforced: true,
-                    //             minLines: 1,
-                    //             cursorColor: Colors.black,
-                    //             cursorWidth: 1,
-                    //             dragStartBehavior: DragStartBehavior.start,
-                    //             decoration: InputDecoration(
-                    //               fillColor: Colors.grey[200],
-                    //               filled: true,
-                    //               labelStyle: TextStyle(
-                    //                 color: Colors.black,
-                    //                 fontSize: 17,
-                    //                 fontWeight: FontWeight.w700,
-                    //               ),
-                    //               enabledBorder: InputBorder.none,
-                    //               focusedBorder: InputBorder.none,
-                    //               hintStyle: TextStyle(
-                    //                 color: Colors.grey,
-                    //                 fontSize: 17,
-                    //               ),
-                    //               hintText: "eg.1630",
-                    //             ),
-                    //             keyboardType: TextInputType.number,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-
-                    /* Container(
-                margin: EdgeInsets.only(
-                  left: 20,
-                  right: 29,
-                  top: 20,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        "End Timing",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: TextField(
-                          controller: endTimingController,
-                          enabled: true,
-                          maxLengthEnforced: true,
-                          minLines: 1,
-                          cursorColor: Colors.black,
-                          cursorWidth: 1,
-                          dragStartBehavior: DragStartBehavior.start,
-                          decoration: InputDecoration(
-                            fillColor: Colors.grey[200],
-                            filled: true,
-                            labelStyle: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 17,
-                            ),
-                            hintText: "eg.1830",
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ), */
                     Container(
                       height: 45,
                       margin: EdgeInsets.only(
@@ -670,8 +582,13 @@ class _CreateClassroomState extends State<CreateClassroom> {
                               subject.isEmpty ||
                               standard.isEmpty ||
                               startTiming == null ||
-                              endTiming == null) {
-                            showDialog(
+                              endTiming == null ||
+                              int.parse(endMinutesController.text) >= 59 &&
+                                  int.parse(endMinutesController.text) <= 0 &&
+                                  int.parse(startMinutesController.text) >=
+                                      59 && 
+                                  int.parse(startMinutesController.text) <= 0) {
+                            showDialog(   
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
@@ -708,8 +625,7 @@ class _CreateClassroomState extends State<CreateClassroom> {
                             }
 
                             print('creating');
-                            currentTeacherClassrooms
-                                .add(uid);
+                            currentTeacherClassrooms.add(uid);
 
                             String finalStartSuffix;
                             String finalEndSuffix;
@@ -730,18 +646,20 @@ class _CreateClassroomState extends State<CreateClassroom> {
                                 .updateData({
                               'classrooms': currentTeacherClassrooms,
                             }).then((v) {
-                              Firestore.instance
-                                  .collection("Classrooms")
-                                  .add({
+                              Firestore.instance.collection("Classrooms").add({
                                 "active": false,
-                                "uid" : uid,
+                                "uid": uid,
                                 "className": classNameController.text,
                                 "subject": subjectController.text,
                                 "standard": int.parse(standardController.text),
-                                'startTiming': finalStart,
-                                'endTiming': finalEnd,
-                                'start': '$startTiming $finalStartSuffix',
-                                'end': '$endTiming $finalEndSuffix',
+                                'startTiming': finalStart +
+                                    int.parse(startMinutesController.text),
+                                'endTiming': finalEnd +
+                                    int.parse(endMinutesController.text),
+                                'start':
+                                    '$startTiming:${startMinutesController.text} $finalStartSuffix',
+                                'end':
+                                    '$endTiming:${endMinutesController.text} $finalEndSuffix',
                                 "teacherID": currentTeacherId,
                                 'students': [],
                               });
